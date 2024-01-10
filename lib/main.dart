@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:weather_app/core/consts.dart';
-import 'package:weather_app/weather_modl.dart';
+import 'package:weather_app/data/weather_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,93 +42,112 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 122, 94, 12),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 12,
-                ),
-                child: SizedBox(
-                  height: 50,
-                  width: 300,
-                  child: TextField(
-                    onChanged: (val) {
-                      if (val.isEmpty) {
-                        errorText = null;
-                        setState(() {});
-                      }
-                    },
-                    controller: controller,
-                    decoration: InputDecoration(
-                      errorText: errorText,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: () {
-                          getWeatherData(cityName: controller.text);
-                        },
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('kk:mm:ss \n EEE d MMM').format(now);
+    return city == ''
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Scaffold(
+            backgroundColor: const Color.fromARGB(255, 26, 123, 168),
+            body: SafeArea(
+              child: Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
+                      child: SizedBox(
+                        height: 50,
+                        width: 300,
+                        child: TextField(
+                          onChanged: (val) {
+                            if (val.isEmpty) {
+                              errorText = null;
+                              setState(() {});
+                            }
+                          },
+                          controller: controller,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            focusColor: Colors.white,
+                            hoverColor: Colors.white,
+                            errorText: errorText,
+                            suffixIcon: IconButton(
+                              color: Colors.white,
+                              icon: const Icon(Icons.search),
+                              onPressed: () {
+                                getWeatherData(cityName: controller.text);
+                              },
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    Text(
+                      city,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                    Text(
+                      weather,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    //  const SizedBox(height: 50),
+                    Image.network(image),
+                    // const SizedBox(height: 50),
+                    Text(
+                      weatherTemp,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                    Text(
+                      textAlign: TextAlign.center,
+                      formattedDate,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                  ],
                 ),
               ),
-              Text(
-                city,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 50),
-              Text(
-                weather,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              //  const SizedBox(height: 50),
-              Image.network(image),
-              // const SizedBox(height: 50),
-              Text(
-                weatherTemp,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 50),
-              Text(
-                textAlign: TextAlign.center,
-                '${DateTime.now()}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 50),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Future<void> getWeatherData({required String cityName}) async {
@@ -142,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
           "units": 'metric',
         },
       );
-      final model = WeatherModl.fromJson(response.data);
+      final model = WeatherModel.fromJson(response.data);
       city = model.name ?? '';
       weather = model.weather?.first.description ?? ' ';
       image =
