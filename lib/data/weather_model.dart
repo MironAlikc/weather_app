@@ -1,4 +1,4 @@
-class WeatherModl {
+class WeatherModel {
   Coord? coord;
   List<Weather>? weather;
   String? base;
@@ -13,22 +13,23 @@ class WeatherModl {
   String? name;
   num? cod;
 
-  WeatherModl(
-      {this.coord,
-      this.weather,
-      this.base,
-      this.main,
-      this.visibility,
-      this.wind,
-      this.clouds,
-      this.dt,
-      this.sys,
-      this.timezone,
-      this.id,
-      this.name,
-      this.cod});
+  WeatherModel({
+    this.coord,
+    this.weather,
+    this.base,
+    this.main,
+    this.visibility,
+    this.wind,
+    this.clouds,
+    this.dt,
+    this.sys,
+    this.timezone,
+    this.id,
+    this.name,
+    this.cod,
+  });
 
-  WeatherModl.fromJson(Map<String, dynamic> json) {
+  WeatherModel.fromJson(Map<String, dynamic> json) {
     coord = json['coord'] != null ? Coord.fromJson(json['coord']) : null;
     if (json['weather'] != null) {
       weather = <Weather>[];
